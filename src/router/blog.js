@@ -25,34 +25,49 @@ const handleBlogRouter = (req, res) => {
 
   // 获取博客详情
   if (method === "GET" && req.path === "/api/blog/detail") {
-    const data = getDetail(id);
-    return new SuccessModel(data);
+    // const data = getDetail(id);
+    // return new SuccessModel(data);
+    const result = getDetail(id);
+    return result.then((data) => {
+      return new SuccessModel(data);
+    });
   }
 
   // 新建博客
   if (method === "POST" && req.path === "/api/blog/new") {
-    const data = newBlog(req.body);
-    return new SuccessModel(data);
+    // const data = newBlog(req.body);
+    // return new SuccessModel(data);
+    const author = "zhangsan"; // 假数据，待开发登录时再改成真数据
+    req.body.author = author;
+    const result = newBlog(req.body);
+    return result.then((data) => {
+      return new SuccessModel(data);
+    });
   }
 
   // 更新博客
   if (method === "POST" && req.path === "/api/blog/update") {
     const result = updateBlog(id, req.body);
-    if (result) {
-      return new SuccessModel();
-    } else {
-      return new ErrorModel("update blog failed");
-    }
+    return result.then((val) => {
+      if (val) {
+        return new SuccessModel();
+      } else {
+        return new ErrorModel("update failed");
+      }
+    });
   }
 
-  // 新建博客
+  // 删除博客
   if (method === "POST" && req.path === "/api/blog/del") {
-    const result = delBlog(id);
-    if (result) {
-      return new SuccessModel();
-    } else {
-      return new ErrorModel("delete blog failed");
-    }
+    const author = "zhangsan"; // 假数据，待开发登录时再改成真数据
+    const result = delBlog(id, author);
+    return result.then((val) => {
+      if (val) {
+        return new SuccessModel();
+      } else {
+        return new ErrorModel("delete blog failed");
+      }
+    });
   }
 };
 
