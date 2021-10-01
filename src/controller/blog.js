@@ -1,4 +1,6 @@
 const { exec, escape } = require("../db/mysql");
+// 预防 xss 攻击，将敏感符号转化 - > 变成 &lt; < 变成 &gt;
+const xss = require("xss");
 
 const getList = (author, keyword) => {
   author = escape(author);
@@ -28,8 +30,8 @@ const getDetail = (id) => {
 const newBlog = (blogData = {}) => {
   // blogData 是一个博客对象，包含 title, content, author 属性
   const { title, content, author } = blogData;
-  title = escape(title);
-  content = escape(content);
+  title = xss(escape(title));
+  content = xss(escape(content));
   author = escape(author);
   const createTime = Date.now();
 
@@ -47,8 +49,8 @@ const updateBlog = (id, blogData = {}) => {
   // id 是要更新博客的 id
   // blogData 是一个博客对象，包含 title content 属性
   const { title, content } = blogData;
-  title = escape(title);
-  content = escape(content);
+  title = xss(escape(title));
+  content = xss(escape(content));
   const sql = `update blogs set title=${title}, content=${content} where id='${id}'`;
 
   return exec(sql).then((updateData) => {
